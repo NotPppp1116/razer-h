@@ -1,7 +1,7 @@
 use std::{self, io};
 
 use rusb::GlobalContext;
-use rusb::{Context, Device, DeviceHandle, UsbContext};
+use rusb::{Context, DeviceHandle, UsbContext};
 
 fn list_devices() {
     let context = Context::new().unwrap();
@@ -49,18 +49,20 @@ pub fn set_up() -> DeviceHandle<GlobalContext> {
         let mut serial_num = String::new();
         println!("what is your device serial number?");
         io::stdin().read_line(&mut serial_num).unwrap();
+        let serial_num = serial_num.trim();
 
-        if (serial_num.len() < 1) {
+        if serial_num.len() < 1 {
             continue;
         }
 
-        let handle = match get_info(&serial_num) {
+        match get_info(serial_num) {
             Ok(h) => return h,
-            Err(rusb::Error::NoDevice) => continue,
+            Err(rusb::Error::NoDevice) => {
+                //clear the screen
+                print!("\x1B[2J\x1B[1;1H");
+                continue;
+            }
             Err(_) => panic!("idk"),
-        };
-
-        //creat the screen
-        print!("\x1B[2J\x1B[1;1H");
+        }
     }
 }

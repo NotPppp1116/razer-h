@@ -1,12 +1,6 @@
 use rusb;
 use std;
 
-macro_rules! hid_req_set_report {
-    () => {
-        0x09
-    };
-}
-
 #[repr(C)]
 pub struct RazerReport {
     pub status: u8,
@@ -25,7 +19,7 @@ pub struct RazerReport {
     pub reserved: u8,
 }
 
-pub fn set_DPI_settings(dpi: u16) -> RazerReport {
+fn make_set_dpi_report(dpi: u16) -> RazerReport {
     let mut report = RazerReport {
         status: 0x00,
         transaction_id: 0x1f,
@@ -124,4 +118,10 @@ pub fn set_onboard_polling(poll: u16, handle: &DeviceHandle<GlobalContext>) {
     let mut report = make_set_polling_report(poll, 0x01);
 
     send_report(&handle, &mut report).unwrap();
+}
+
+pub fn set_dpi_settings(dpi: u16, handle: &DeviceHandle<GlobalContext>) {
+    let mut report = make_set_dpi_report(dpi);
+
+    send_report(handle, &mut report).unwrap();
 }

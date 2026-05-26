@@ -1,5 +1,5 @@
-use std::{io};
-use rusb::{Device, DeviceHandle, GlobalContext};
+use std::io;
+use rusb::{DeviceHandle, GlobalContext};
 
 use crate::protocol;
 
@@ -24,6 +24,6 @@ pub fn set_interactive_settings(handle:&DeviceHandle<GlobalContext>) {
     let dpi: u16 = choices[0].parse().unwrap();
     let poll: u16 = choices[1].parse().unwrap();
 
-    protocol::set_DPI_settings(dpi);
-    protocol::set_onboard_polling(poll, &handle);
+    protocol::set_dpi_settings(dpi, handle);
+    protocol::set_onboard_polling(poll, handle);
 }
